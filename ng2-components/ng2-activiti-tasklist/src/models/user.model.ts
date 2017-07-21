@@ -28,11 +28,37 @@ export class User {
     email: string;
     firstName: string;
     lastName: string;
+    private _fullName: string = '';
+    private _shortName: string = '';
 
     constructor(obj?: any) {
         this.id = obj && obj.id;
         this.email = obj && obj.email || null;
         this.firstName = obj && obj.firstName || null;
         this.lastName = obj && obj.lastName || null;
+    }
+
+    get fullName(): string {
+        if(this._fullName.length === 0){
+            if (this.firstName !== undefined && this.firstName !== null && this.firstName.trim().length > 0){
+                this._fullName += this.firstName.trim();
+            }
+            if (this.lastName !== undefined && this.lastName !== null && this.lastName.trim().length > 0){
+                this._fullName += this._fullName.length > 0 ? ' ' + this.lastName.trim() : this.lastName.trim();
+            }
+        }
+        return this._fullName;
+    }
+
+    get shortName(): string {
+        if(this._shortName.length === 0){
+            if (this.firstName !== undefined && this.firstName !== null && this.firstName.trim().length > 0){
+                this._shortName += this.firstName.trim()[0].toUpperCase();
+            }
+            if (this.lastName !== undefined && this.lastName !== null && this.lastName.trim().length > 0){
+                this._shortName += this.lastName.trim()[0].toUpperCase();
+            }
+        }
+        return this._shortName;
     }
 }
