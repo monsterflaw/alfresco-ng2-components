@@ -22,7 +22,7 @@ import { ProcessInstance } from '../models/process-instance.model';
 @Component({
     selector: 'adf-process-instance-header',
     templateUrl: './process-instance-header.component.html',
-    styleUrls: ['./process-instance-header.component.css']
+    styleUrls: ['./process-instance-header.component.scss']
 })
 export class ProcessInstanceHeaderComponent implements OnChanges {
 

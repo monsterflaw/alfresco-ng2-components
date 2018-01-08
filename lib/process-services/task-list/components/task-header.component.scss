@@ -27,4 +27,11 @@
             font-family: inherit;
         }
     }
+
+    adf-task-header {
+        word-break: break-all;
+        .adf-textitem-editable {
+            max-width: 40%;
+        }
+    }
 }

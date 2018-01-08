@@ -66,6 +66,12 @@
         .people-email {
             opacity: 0.54;
         }
+
+        tbody td {
+            outline: initial !important;
+            padding-left: 24px !important;
+            padding-right: 0px !important;
+        }
     }
 
     .people-img {
