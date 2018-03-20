@@ -213,6 +213,71 @@ describe('DataTable', () => {
         expect(dataTable.resetSelection).toHaveBeenCalled();
     });
 
+    it('should reset selection when data changes', () => {
+        spyOn(dataTable, 'resetSelection').and.callThrough();
+
+        dataTable.data = new ObjectDataTableAdapter(
+            [
+                { name: '1' },
+                { name: '2' }
+            ],
+            [ new ObjectDataColumn({ key: 'name'}) ]
+        );
+        dataTable.multiselect = true;
+
+        dataTable.ngDoCheck();
+        expect(dataTable.resetSelection).toHaveBeenCalled();
+    });
+
+    it('should not reset selection when data changes and multiselect is disabled', () => {
+        spyOn(dataTable, 'resetSelection').and.callThrough();
+
+        dataTable.data = new ObjectDataTableAdapter(
+            [
+                { name: '1' },
+                { name: '2' }
+            ],
+            [ new ObjectDataColumn({ key: 'name'}) ]
+        );
+
+        dataTable.ngDoCheck();
+        expect(dataTable.resetSelection).not.toHaveBeenCalled();
+    });
+
+    it('should reset selection when rows change', () => {
+        spyOn(dataTable, 'resetSelection').and.callThrough();
+
+        dataTable.rows = [
+                { name: '1' },
+                { name: '2' }
+            ];
+        dataTable.multiselect = true;
+
+        dataTable.ngDoCheck();
+        expect(dataTable.resetSelection).toHaveBeenCalled();
+    });
+
+    it('should not reset selection when rows change and multiselect is disabled', () => {
+        spyOn(dataTable, 'resetSelection').and.callThrough();
+
+        dataTable.rows = [
+                { name: '1' },
+                { name: '2' }
+            ];
+
+        dataTable.ngDoCheck();
+        expect(dataTable.resetSelection).not.toHaveBeenCalled();
+    });
+
+    it('should not reset selection when input does not change', () => {
+        spyOn(dataTable, 'resetSelection').and.callThrough();
+
+        dataTable.multiselect = true;
+
+        dataTable.ngDoCheck();
+        expect(dataTable.resetSelection).not.toHaveBeenCalled();
+    });
+
     it('should select only one row with [single] selection mode', () => {
         dataTable.selectionMode = 'single';
         dataTable.data = new ObjectDataTableAdapter(

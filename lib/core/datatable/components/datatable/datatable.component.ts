@@ -152,7 +152,8 @@ export class DataTableComponent implements AfterContentInit, OnChanges, DoCheck 
 
     private schema: DataColumn[] = [];
 
-    private differ: any;
+    private differRows: any;
+    private differDataRows: any;
     private rowMenuCache: object = {};
 
     private singleClickStreamSub: Subscription;
@@ -160,7 +161,8 @@ export class DataTableComponent implements AfterContentInit, OnChanges, DoCheck 
 
     constructor(private elementRef: ElementRef, differs: IterableDiffers) {
         if (differs) {
-            this.differ = differs.find([]).create(null);
+            this.differRows = differs.find([]).create(null);
+            this.differDataRows = differs.find([]).create(null);
         }
         this.click$ = new Observable<DataRowEvent>(observer => this.clickObserver = observer).share();
     }
@@ -195,10 +197,21 @@ export class DataTableComponent implements AfterContentInit, OnChanges, DoCheck 
         }
     }
 
-    ngDoCheck() {
-        let changes = this.differ.diff(this.rows);
-        if (changes) {
+ngDoCheck() {
+        const rowChanges = this.differRows.diff(this.rows);
+        if (rowChanges) {
             this.setTableRows(this.rows);
+        }
+
+        if (this.multiselect) {
+            let dataRowChanges;
+            if (this.data) {
+                dataRowChanges = this.differDataRows.diff(this.data.getRows());
+            }
+            if (rowChanges || dataRowChanges) {
+                this.resetSelection();
+                this.emitRowSelectionEvent('row-unselect', null);
+            }
         }
     }
 
