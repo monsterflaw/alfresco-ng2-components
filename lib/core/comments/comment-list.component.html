@@ -1,5 +1,6 @@
  <mat-list class="adf-comment-list">
-    <mat-list-item *ngFor="let comment of comments"
+    <mat-list-item *ngFor="let comment of getParentComments
+    ()"
                   (click)="selectComment(comment)"
                   class="adf-comment-list-item"
                   [class.is-selected]="comment.isSelected"
@@ -24,6 +25,26 @@
             <div matLine id="comment-message" class="adf-comment-message" [innerHTML]="comment.message"></div>
             <div matLine id="comment-time" class="adf-comment-message-time">
                 {{ comment.created | adfTimeAgo: currentLocale }}
+                <button mat-icon-button (click)="setReplyParent(comment.id)">
+                    <mat-icon>reply</mat-icon>
+                </button>
+            </div>
+            <adf-add-comment *ngIf="replyParentId === comment.id" [nodeId]="nodeId" [parentId]="comment.id" (success)="updateComments($event)"></adf-add-comment>
+            <div *ngFor="let childComment of getChildComments(comment?.id)"
+                  class="adf-comment-list-item">
+                <div class="adf-comment-contents">
+                    <div matLine id="comment-user" class="adf-comment-user-name">
+                        {{childComment.createdBy?.firstName}} {{childComment.createdBy?.lastName}}
+                    </div>
+                    <div matLine id="comment-message" class="adf-comment-message" [innerHTML]="getChildCommentMessage(childComment, comment.id)"></div>
+                    <div matLine id="comment-time" class="adf-comment-message-time">
+                        {{ childComment.created | adfTimeAgo: currentLocale }}
+                        <button mat-icon-button (click)="setReplyParent(childComment.id)">
+                            <mat-icon>reply</mat-icon>
+                        </button>
+                    </div>
+                </div>
+                <adf-add-comment *ngIf="replyParentId === childComment.id" [nodeId]="nodeId" [parentId]="comment.id" (success)="updateComments($event)"></adf-add-comment>
             </div>
         </div>
     </mat-list-item>

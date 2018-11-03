@@ -1,0 +1,6 @@
+<div fxLayout="row">
+    <mat-form-field style="width: calc(100% - 40px)">
+        <input fxFlex (keyup.escape)="clear()" matInput placeholder="{{'COMMENTS.ADD' | translate}}" [(ngModel)]="message">
+    </mat-form-field>
+    <button mat-icon-button color="primary" (click)="add()" [disabled]="!message"> <mat-icon>send</mat-icon></button>
+</div>

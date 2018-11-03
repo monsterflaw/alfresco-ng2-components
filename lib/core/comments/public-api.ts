@@ -17,5 +17,6 @@
 
 export * from './comment-list.component';
 export * from './comments.component';
+export * from './add-comment.component';
 
 export * from './comments.module';

@@ -26,6 +26,7 @@ import { PipeModule } from '../pipes/pipe.module';
 
 import { CommentListComponent } from './comment-list.component';
 import { CommentsComponent } from './comments.component';
+import { AddCommentComponent } from './add-comment.component';
 
 @NgModule({
     imports: [
@@ -40,7 +41,8 @@ import { CommentsComponent } from './comments.component';
     ],
     declarations: [
         CommentListComponent,
-        CommentsComponent
+        CommentsComponent,
+        AddCommentComponent
     ],
     exports: [
         CommentListComponent,

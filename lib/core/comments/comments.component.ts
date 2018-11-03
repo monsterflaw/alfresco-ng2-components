@@ -50,10 +50,6 @@ export class CommentsComponent implements OnChanges {
     private commentObserver: Observer<CommentModel>;
     comment$: Observable<CommentModel>;
 
-    message: string;
-
-    beingAdded: boolean = false;
-
     constructor(private commentProcessService: CommentProcessService, private commentContentService: CommentContentService) {
         this.comment$ = new Observable<CommentModel>(observer => this.commentObserver = observer)
             .pipe(share());
@@ -125,49 +121,6 @@ export class CommentsComponent implements OnChanges {
         this.comments = [];
     }
 
-    add(): void {
-        if (this.message && this.message.trim() && !this.beingAdded) {
-            const comment = this.sanitize(this.message);
-
-            this.beingAdded = true;
-            if (this.isATask()) {
-                this.commentProcessService.addTaskComment(this.taskId, comment)
-                    .subscribe(
-                        (res: CommentModel) => {
-                            this.comments.unshift(res);
-                            this.message = '';
-                            this.beingAdded = false;
-
-                        },
-                        (err) => {
-                            this.error.emit(err);
-                            this.beingAdded = false;
-                        }
-                    );
-            }
-
-            if (this.isANode()) {
-                this.commentContentService.addNodeComment(this.nodeId, comment)
-                    .subscribe(
-                        (res: CommentModel) => {
-                            this.comments.unshift(res);
-                            this.message = '';
-                            this.beingAdded = false;
-
-                        },
-                        (err) => {
-                            this.error.emit(err);
-                            this.beingAdded = false;
-                        }
-                    );
-            }
-        }
-    }
-
-    clear(): void {
-        this.message = '';
-    }
-
     isReadOnly(): boolean {
         return this.readOnly;
     }
@@ -180,9 +133,7 @@ export class CommentsComponent implements OnChanges {
         return this.nodeId ? true : false;
     }
 
-    private sanitize(input: string) {
-        return input.replace(/<[^>]+>/g, '')
-            .replace(/^\s+|\s+$|\s+(?=\s)/g, '')
-            .replace(/\r?\n/g, '<br/>');
+    updateComments(comment: CommentModel): void {
+        this.comments.unshift(comment);
     }
 }

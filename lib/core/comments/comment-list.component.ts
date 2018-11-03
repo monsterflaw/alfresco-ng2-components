@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewEncapsulation, OnInit, OnChanges, SimpleChange, SimpleChanges } from '@angular/core';
 import { CommentModel } from '../models/comment.model';
 import { EcmUserService } from '../userinfo/services/ecm-user.service';
 import { PeopleProcessService } from '../services/people-process.service';
@@ -34,13 +34,23 @@ export class CommentListComponent {
     @Input()
     comments: CommentModel[];
 
+    @Input()
+    nodeId: string;
+
     /** Emitted when the user clicks on one of the comment rows. */
     @Output()
     clickRow: EventEmitter<CommentModel> = new EventEmitter<CommentModel>();
 
+    @Output()
+    success: EventEmitter<CommentModel> = new EventEmitter<CommentModel>();
+
     selectedComment: CommentModel;
 
     currentLocale;
+
+    parentComments: CommentModel[];
+
+    replyParentId: string;
 
     constructor(public peopleProcessService: PeopleProcessService,
                 public ecmUserService: EcmUserService,
@@ -86,5 +96,38 @@ export class CommentListComponent {
 
     private isAContentUsers(user: any): boolean {
         return user.avatarId;
+    }
+
+    getParentComments(): CommentModel[] {
+        let parentComments;
+        if (this.comments && this.comments.length > 0) {
+            parentComments = this.comments.filter(comment => !comment.message.startsWith('$$$REPLY:'));
+        } else {
+            parentComments = this.comments;
+        }
+
+        return parentComments;
+    }
+
+    getChildComments(parentCommentId: string): CommentModel[] {
+        let childComments = <CommentModel[]> [];
+        if (parentCommentId && this.comments && this.comments.length > 0) {
+            childComments = this.comments.filter(comment => comment.message.startsWith(`$$$REPLY:${parentCommentId}$$$`));
+        }
+
+        return childComments;
+    }
+
+    getChildCommentMessage(comment: CommentModel, parentCommentId: string): string {
+        return comment && comment.message && comment.message.startsWith(`$$$REPLY:${parentCommentId}$$$`) ?
+        comment.message.split(`$$$REPLY:${parentCommentId}$$$`)[1] : comment.message;
+    }
+
+    setReplyParent(parentId): void {
+        this.replyParentId = parentId;
+    }
+
+    updateComments(comment: CommentModel) {
+        this.success.emit(comment);
     }
 }
